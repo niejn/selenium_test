@@ -1,11 +1,15 @@
 from time import sleep
 
 from selenium import webdriver
-
+options = webdriver.FirefoxOptions()
+options.set_headless()
+# options.add_argument(‘-headless‘)
+# options.add_argument('--disable-gpu')
+driver=webdriver.Firefox(firefox_options=options)
 # create a new Firefox session
-driver = webdriver.Firefox()
+# driver = webdriver.Firefox()
 driver.implicitly_wait(30)
-driver.maximize_window()
+# driver.maximize_window()
 # navigate to the application home page
 driver.get("http://demo.magentocommerce.com/")
 # get the search textbox

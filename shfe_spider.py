@@ -1,0 +1,200 @@
+# http://www.shfe.com.cn/data/dailydata/kx/kx20180319.dat
+import datetime
+from time import sleep
+
+import requests
+
+from urllib.parse import urlencode
+from urllib.request import urlopen, Request
+import json
+import pandas as pd
+
+from db_insert2 import set_type
+from shfe_ranking_com import split_by_productname
+
+
+def getLastWeekDay(day=None):
+    now=day
+
+    if now.isoweekday()==1:
+      dayStep=3
+    else:
+      dayStep=1
+
+    lastWorkDay = now - datetime.timedelta(days=dayStep)
+    return lastWorkDay
+
+
+def test1():
+    url = 'https://api.github.com/some/endpoint'
+    headers = {'user-agent': 'my-app/0.0.1'}
+    r = requests.get(url, headers=headers)
+    r.status_code == requests.codes.ok
+    # bad_r.raise_for_status()
+    return
+
+def test():
+    values = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Connection': 'keep-alive',
+        'Cookie': 'td_cookie=978232345; BIGipServerwww_cbd=859613376.23067.0000; '
+                  'JSESSIONID=P6LChmJW5Bljnn1ty2nXvy2KMtvgQcDVGphP8pWjT2KfghhsJ8kJ!-1106748389;'
+                  'TS014ada8c=0169c5aa326c79ab9435ea5f82ce7bd3a48f37c042ae0caef379338ddbe1a50d283b833a82cc770ef42a41c3abb5de389ac9f6a59f',
+        'Host': 'www.shfe.com.cn',
+        'Referer': 'http://www.shfe.com.cn/statements/dataview.html?paramid=pm',
+        'Upgrade-Insecure-Requests':'1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36',
+        # '': '',
+    }
+
+    # data = urlencode(values)
+    url = "http://www.czce.com.cn/portal/DFSStaticFiles/Future/2018/20180309/FutureDataHolding.htm"
+
+    data = urlencode(values).encode(encoding='UTF8')
+    request = Request(url, data)
+
+    response = urlopen(request, timeout=4)
+    re_data = response.read()
+    re_data = re_data.decode('utf8')
+
+    print(re_data)
+    return
+
+
+def crawl_openinterest(year, month, day):
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Connection': 'keep-alive',
+
+        'Host': 'www.shfe.com.cn',
+        'Referer': 'http://www.shfe.com.cn/statements/dataview.html?paramid=pm',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36',
+
+    }
+    params = {'firstname': 'Ryan', 'lastname': 'Mitchell'}
+    # url = 'http://www.shfe.com.cn/data/instrument/ContractBaseInfo20180321.dat'
+    url = "http://www.shfe.com.cn/data/dailydata/kx/kx{year:>04}{mon:>02}{day:>02}.dat"\
+        .format(year=year, mon=month, day=day)
+    # url = "http://www.shfe.com.cn/data/dailydata/kx/kx20180319.dat"
+    # http://www.shfe.com.cn/data/instrument/ContractDailyTradeArgument20180321.dat
+    request = requests.post(url, headers=headers)
+    print(request.request.headers)
+    # print(request.headers)
+    # response = urlopen(request, timeout=4)
+    # re_data = response.read()
+    # re_data = re_data.decode('utf8')
+    print(request.text)
+    comments = request.json()
+    data = comments['o_curinstrument']
+    issue = json.loads(request.text)
+    df = pd.DataFrame(data)
+    openinterest_dict = get_openinterest(df)
+    # print(openinterest_dict)
+    return openinterest_dict
+
+
+def shfe_rank(year=2018, month=3, day=27):
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Connection': 'keep-alive',
+
+        'Host': 'www.shfe.com.cn',
+        'Referer': 'http://www.shfe.com.cn/statements/dataview.html?paramid=pm',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36',
+
+    }
+
+    url = "http://www.shfe.com.cn/data/dailydata/kx/pm20180327.dat"
+    url = "http://www.shfe.com.cn/data/dailydata/kx/pm{year:>04}{month:>02}{day:>02}.dat" \
+        .format(year=year, month=month, day=day)
+
+    request = requests.post(url, headers=headers)
+    print(request.request.headers)
+
+    print(request.text)
+    comments = request.json()
+    if 'o_curinstrument' in comments:
+        data = comments['o_curinstrument']
+    else:
+        data = comments['o_cursor']
+    issue = json.loads(request.text)
+    df = pd.DataFrame(data)
+
+    df.to_csv('上期所0327.csv', encoding='gbk', index=False)
+    set_type(df, year=year, month=month, day=day)
+
+
+    return
+
+def main():
+    today = datetime.date.today()
+    today = datetime.datetime(2018, 3, 16)
+    for i in range(10):
+        weekday = getLastWeekDay(today)
+        today = weekday
+        print(weekday)
+        shfe_rank(year=weekday.year, month=weekday.month, day=weekday.day)
+        sleep(2)
+
+
+    # headers = {
+    #     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    #     'Accept-Encoding': 'gzip, deflate',
+    #     'Accept-Language': 'zh-CN,zh;q=0.9',
+    #     'Connection': 'keep-alive',
+    #
+    #     'Host': 'www.shfe.com.cn',
+    #     'Referer': 'http://www.shfe.com.cn/statements/dataview.html?paramid=pm',
+    #     'Upgrade-Insecure-Requests': '1',
+    #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36',
+    #
+    # }
+    # # params = {'firstname': 'Ryan', 'lastname': 'Mitchell'}
+    # # url = 'http://www.shfe.com.cn/data/instrument/ContractBaseInfo20180321.dat'
+    # # url = "http://www.shfe.com.cn/data/dailydata/kx/kx20180319.dat"
+    # url = "http://www.shfe.com.cn/data/dailydata/kx/pm20180327.dat"
+    # # http://www.shfe.com.cn/data/dailydata/kx/pm20180327.dat
+    # # http://www.shfe.com.cn/data/instrument/ContractDailyTradeArgument20180321.dat
+    # request = requests.post(url, headers=headers)
+    # print(request.request.headers)
+    # # print(request.headers)
+    # # response = urlopen(request, timeout=4)
+    # # re_data = response.read()
+    # # re_data = re_data.decode('utf8')
+    # print(request.text)
+    # comments = request.json()
+    # if 'o_curinstrument' in comments:
+    #     data = comments['o_curinstrument']
+    # else:
+    #     data = comments['o_cursor']
+    # issue = json.loads(request.text)
+    # df = pd.DataFrame(data)
+    # {'名次':'RANK',	'期货公司会员简称':'PARTICIPANTABBR1',	'成交量':'',
+    #  '比上交易日增减':'CJ1_CHG',	'名次':'',	'期货公司会员简称':'PARTICIPANTABBR2',
+    #  '持买单量':'',	'比上交易日增减':'CJ2_CHG',	'名次':'',
+    #  '期货公司会员简称':'PARTICIPANTABBR3',	'持卖单量':'CJ3',
+    #  '比上交易日增减/变化':'CJ3_CHG',
+    #  }
+    # df.to_csv('上期所0327.csv', encoding='gbk', index=False)
+    # set_type(df)
+    # split_by_productname(df)
+    # 'DELIVERYMONTH' (2906757719856)
+    # url = 'http://www.shfe.com.cn/data/dailydata/kx/kx20180319.dat'
+    #
+    # # r = requests.head(url=url, auth=auth)
+    # r = requests.head(url=url, )
+    # print(r.headers)
+    # o_curinstrument
+
+    return
+
+if __name__ == '__main__':
+    main()

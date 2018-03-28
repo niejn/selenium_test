@@ -7,3 +7,5 @@ data = html.read()
 str_data = bytes.decode(data)
 j = json.loads(str_data)
 print(html.read())
+
+

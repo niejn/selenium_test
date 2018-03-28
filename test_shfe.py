@@ -13,7 +13,7 @@ driver.maximize_window()
 # navigate to the application home page
 # http://www.shfe.com.cn/data/dailydata/kx/pm20180301.dat
 driver.get("http://www.shfe.com.cn/data/dailydata/kx/pm20180301.dat")
-driver.get
+# driver.get
 # driver.get("http://www.shfe.com.cn/statements/dataview.html?paramid=pm")
 # get the search textbox
 # /html/body/header/div[2]/div[2]/div[1]/section/ul/li[1]/a
