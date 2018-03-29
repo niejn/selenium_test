@@ -16,19 +16,22 @@ def main():
             '期货公司会员简称3':'PARTICIPANTABBR3',
             '持卖单量':'CJ3',	'比上交易日增减3':'CJ3_CHG',
 }
+
+    re_temp = {val:key for key,val in temp.items()}
+    print(re_temp)
     # for key, val in temp.items():
     #     # print(key)
     #     str = "Column('{key}', Integer(), comment='{comment}'),".format(key = val, comment=key)
     #     print(str)
 
-    str = 'INSTRUMENTID PRODUCTNAME PRODUCTSORTNO PARTICIPANTID1	PARTICIPANTID2	PARTICIPANTID3'
-    str = 'PARTICIPANTID1	PARTICIPANTID2	PARTICIPANTID3'
-    headers = str.split()
-    print(headers)
-    for key in headers:
-        key = key.lower()
-        str = "Column('{key}', Integer(), comment='{comment}'),".format(key=key, comment=key)
-        print(str)
+    # str = 'INSTRUMENTID PRODUCTNAME PRODUCTSORTNO PARTICIPANTID1	PARTICIPANTID2	PARTICIPANTID3'
+    # str = 'PARTICIPANTID1	PARTICIPANTID2	PARTICIPANTID3'
+    # headers = str.split()
+    # print(headers)
+    # for key in headers:
+    #     key = key.lower()
+    #     str = "Column('{key}', Integer(), comment='{comment}'),".format(key=key, comment=key)
+    #     print(str)
     return
 
 if __name__ == '__main__':

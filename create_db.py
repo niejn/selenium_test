@@ -39,7 +39,7 @@ class DataAccessLayer:
                   Column('participantid2', Integer(), comment='participantid2'),
                   Column('participantid3', Integer(), comment='participantid3'),
                   # Column('date', DateTime(timezone=True),server_default=datetime.now()),
-                  Column('date', DateTime(timezone=True), server_default=func.current_timestamp()),
+                  Column('utc_date', DateTime(timezone=True), server_default=func.current_timestamp()),
                   # Column('date1', DateTime(timezone=False), server_default=text('CURRENT_TIMESTAMP')),
                   # func.current_timestamp()
                   Column('report_date', DateTime,),

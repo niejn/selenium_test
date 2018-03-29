@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 import json
 import pandas as pd
+from bs4 import BeautifulSoup
 
 from db_insert2 import set_type
 from shfe_ranking_com import split_by_productname
@@ -97,7 +98,15 @@ def crawl_openinterest(year, month, day):
     # print(openinterest_dict)
     return openinterest_dict
 
-
+'''import requests
+session = requests.Session()
+params = {'username': 'username', 'password': 'password'}
+s = session.post("http://pythonscraping.com/pages/cookies/welcome.print("Cookie is set to:")
+print(s.cookies.get_dict())
+print("-----------")
+print("Going to profile page...")
+s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
+print(s.text)'''
 def shfe_rank(year=2018, month=3, day=27):
     headers = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -117,7 +126,20 @@ def shfe_rank(year=2018, month=3, day=27):
         .format(year=year, month=month, day=day)
 
     request = requests.post(url, headers=headers)
-    print(request.request.headers)
+    if request.status_code == requests.codes.ok:
+        pass
+    else:
+        print('404 Request Page Not Found!')
+        print(request.status_code)
+        return
+    # if requests.status_code == 404:
+    #     print('404 Request Page Not Found!')
+    # content = request.text
+    # soup = BeautifulSoup(content, 'lxml')
+    # divs = soup.find_all("div",align='center')
+    # print(divs)
+    # print(divs[0].get_text())
+    # print(request.request.headers)
 
     print(request.text)
     comments = request.json()
@@ -128,16 +150,17 @@ def shfe_rank(year=2018, month=3, day=27):
     issue = json.loads(request.text)
     df = pd.DataFrame(data)
 
-    df.to_csv('上期所0327.csv', encoding='gbk', index=False)
+    file_name = "shfe_{year:>04}{month:>02}{day:>02}.csv".format(year=year, month=month, day=day)
+    df.to_csv(file_name, encoding='gbk', index=False)
     set_type(df, year=year, month=month, day=day)
 
 
     return
 
 def main():
-    today = datetime.date.today()
-    today = datetime.datetime(2018, 3, 16)
-    for i in range(10):
+    # today = datetime.date.today()
+    today = datetime.datetime(2018, 2, 22)
+    for i in range(21):
         weekday = getLastWeekDay(today)
         today = weekday
         print(weekday)

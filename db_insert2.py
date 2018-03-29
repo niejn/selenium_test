@@ -245,9 +245,15 @@ def init_db(path='./insert_db'):
 
 
 def set_type(df, year=2018, month=3, day=17):
-    df.replace({r'\A\s+|\s+\Z': '', '\n': ''}, regex=True, inplace=True)
-    df.replace({'': 0}, regex=True, inplace=True)
+    # file_name = "shfe_{year:>04}{month:>02}{day:>02}".format(year=year, month=month, day=day)
+    # df.to_csv(file_name, index=False)
+    df = df.applymap(lambda x: x.strip() if type(x) is str else x)
+    # df.replace({r'\A\s+|\s+\Z': '', '\n': ''}, regex=True, inplace=True)
+    # df.replace({r'\s+$': '', r'^\s+': ''}, regex=True, inplace=True)
+    # df.replace({'': 0}, regex=True, inplace=True)
     df = df[~df['PARTICIPANTABBR1'].isin(['期货公司', '非期货公司', '', ])]
+    # df.replace({'': 0}, regex=True, inplace=True)
+    df.replace({'': 0}, regex=True, inplace=True)
     df = df.dropna()
     print(df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']])
 
@@ -255,6 +261,9 @@ def set_type(df, year=2018, month=3, day=17):
     # df[['two', 'three']].astype(float)
     # df['PARTICIPANTABBR1'] = df['PARTICIPANTABBR1'].str.strip()
     # df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']] = df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']].applymap(lambda x: x.strip())
+    file_name = "clean_shfe_{year:>04}{month:>02}{day:>02}.csv".format(year=year, month=month, day=day)
+    df.to_csv(file_name, encoding='gbk', index=False)
+
     df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']] = df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']].astype(dtype='int32')
     # PARTICIPANTID1	PARTICIPANTID2	PARTICIPANTID3
     print(df)
