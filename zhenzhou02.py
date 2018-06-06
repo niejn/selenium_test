@@ -47,10 +47,25 @@ def request_ajax_url(url,body=None,referer=None,cookie=None,**headers):
         return response
 
 def test():
+    '''
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+    Accept-Encoding: gzip, deflate
+    Accept-Language: zh-CN,zh;q=0.9
+    Cache-Control: max-age=0
+    Connection: keep-alive
+    Cookie: td_cookie=4076000372; BIGipServerwww_cbd=842836160.23067.0000; JSESSIONID=SLq1hVTJlrv4QWBgxYPRN2G18GXH35TGqZYtSVSmdcJF9f6bNfTS!712259343; TS014ada8c=0169c5aa32d0ddd752d8b801f3963f99c9ffe2f89a3cc7350c7a8057eac687f25da48d67ef7c38a277f42a68448c826487cff39e55
+    Host: www.czce.com.cn
+    If-Modified-Since: Mon, 16 Apr 2018 07:38:39 GMT
+    Referer: http://www.czce.com.cn/portal/DFSStaticFiles/Future/2018/20180416/FutureDataTradeamt.htm
+    Upgrade-Insecure-Requests: 1
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36
+    :return:
+    '''
     values = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Cache-Control':'max-age=0',
         'Connection': 'keep-alive',
         'Cookie': 'td_cookie=978232345; BIGipServerwww_cbd=859613376.23067.0000; '
                   'JSESSIONID=P6LChmJW5Bljnn1ty2nXvy2KMtvgQcDVGphP8pWjT2KfghhsJ8kJ!-1106748389;'
@@ -63,8 +78,8 @@ def test():
     }
 
     # data = urlencode(values)
-    url = "http://www.czce.com.cn/portal/DFSStaticFiles/Future/2018/20180309/FutureDataHolding.htm"
-
+    # url = "http://www.czce.com.cn/portal/DFSStaticFiles/Future/2018/20180416/FutureDataHolding.htm"
+    url = 'http://www.czce.com.cn/portal/DFSStaticFiles/Future/2018/20180416/FutureDataTradeamt.htm'
     data = urlencode(values).encode(encoding='UTF8')
     request = Request(url, data)
 

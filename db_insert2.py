@@ -268,7 +268,7 @@ def set_type(df, year=2018, month=3, day=17):
     # PARTICIPANTID1	PARTICIPANTID2	PARTICIPANTID3
     print(df)
     df['report_date'] = datetime.datetime(year, month, day)
-
+    df['exchange'] = 'SHFE'
     print(df.head())
     insert_db(df, tablename='ranks', con='sqlite:///exchange.sqlite')
     return

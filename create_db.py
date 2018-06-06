@@ -17,11 +17,12 @@ from sqlalchemy.sql import insert
 class DataAccessLayer:
     connection = None
     engine = None
-    conn_string = 'sqlite:///exchange.sqlite'
+    conn_string = 'sqlite:///exchange_v1.sqlite'
     metadata = MetaData()
     ranks = Table('ranks',
                   metadata,
                   Column('id', Integer(), primary_key=True, autoincrement=True),
+                  Column('exchange', String(50), comment='交易所名称'),
                   Column('rank', Integer(), comment='名次'),
                   Column('CJ1', Integer(), comment='成交量'),
                   Column('CJ2', Integer(), comment='持买单量'),
@@ -32,12 +33,12 @@ class DataAccessLayer:
                   Column('CJ3_CHG', Integer(), comment='比上交易日增减3'),
                   Column('CJ2_CHG', Integer(), comment='比上交易日增减2'),
                   Column('CJ1_CHG', Integer(), comment='比上交易日增减1'),
-                  Column('instrumentid', String(50), comment='instrumentid'),
-                  Column('productname', String(50), comment='productname'),
+                  Column('instrumentid', String(50), comment='合约代码'),
+                  Column('productname', String(50), comment='合约品种'),
                   Column('productsortno', Integer(), comment='productsortno'),
-                  Column('participantid1', Integer(), comment='participantid1'),
-                  Column('participantid2', Integer(), comment='participantid2'),
-                  Column('participantid3', Integer(), comment='participantid3'),
+                  Column('participantid1', Integer(), comment='期货公司代码1'),
+                  Column('participantid2', Integer(), comment='期货公司代码2'),
+                  Column('participantid3', Integer(), comment='期货公司代码3'),
                   # Column('date', DateTime(timezone=True),server_default=datetime.now()),
                   Column('utc_date', DateTime(timezone=True), server_default=func.current_timestamp()),
                   # Column('date1', DateTime(timezone=False), server_default=text('CURRENT_TIMESTAMP')),
@@ -52,14 +53,14 @@ class DataAccessLayer:
         # create_engine("...", connect_args={"options": "-c timezone=utc"})
         self.engine = create_engine(conn_string or self.conn_string)
         self.engine.execute('''
-            drop table {name}'''.format(name='ranks'))
+            DROP TABLE IF EXISTS {name}'''.format(name='ranks'))
         ans = self.metadata.create_all(self.engine)
         print(ans)
         # self.connection = self.engine.connect()
 
 
 dal = DataAccessLayer()
-dal.db_init('sqlite:///exchange.sqlite')
+dal.db_init('sqlite:///exchange_v1.sqlite')
 
 '''
 insert时候要初始化，负责没有反应

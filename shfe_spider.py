@@ -94,9 +94,9 @@ def crawl_openinterest(year, month, day):
     data = comments['o_curinstrument']
     issue = json.loads(request.text)
     df = pd.DataFrame(data)
-    openinterest_dict = get_openinterest(df)
-    # print(openinterest_dict)
-    return openinterest_dict
+    # openinterest_dict = get_openinterest(df)
+    # # print(openinterest_dict)
+    # return openinterest_dict
 
 '''import requests
 session = requests.Session()
@@ -152,6 +152,7 @@ def shfe_rank(year=2018, month=3, day=27):
 
     file_name = "shfe_{year:>04}{month:>02}{day:>02}.csv".format(year=year, month=month, day=day)
     df.to_csv(file_name, encoding='gbk', index=False)
+    # insert to db
     set_type(df, year=year, month=month, day=day)
 
 
@@ -159,10 +160,13 @@ def shfe_rank(year=2018, month=3, day=27):
 
 def main():
     # today = datetime.date.today()
-    today = datetime.datetime(2018, 2, 22)
-    for i in range(21):
+    today = datetime.datetime(2018, 6, 6)
+    endday = datetime.datetime(2018, 5, 21)
+    for i in range(30):
         weekday = getLastWeekDay(today)
         today = weekday
+        if today <= endday:
+            break
         print(weekday)
         shfe_rank(year=weekday.year, month=weekday.month, day=weekday.day)
         sleep(2)

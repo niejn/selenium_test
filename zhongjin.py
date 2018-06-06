@@ -14,8 +14,8 @@ import json
 from urllib.request import urlopen
 import json
 # j = json.loads('{"one" : "1", "two" : "2", "three" : "3"}')
-
-html = urlopen("http://www.cffex.com.cn/sj/ccpm/201803/09/IF.xml")
+# http://www.cffex.com.cn/sj/ccpm/201804/09/IF.xml
+html = urlopen("http://www.cffex.com.cn/sj/ccpm/201804/09/IF.xml")
 data = html.read()
 print(data)
 str_data = bytes.decode(data)
