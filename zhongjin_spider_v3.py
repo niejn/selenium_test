@@ -166,8 +166,8 @@ def cffex_rank_by_contract(year=2018, month=5, day=1, contract='IF'):
 def main():
     # cffex_rank_by_contract()
     # return
-    today = datetime.datetime(2018, 5, 22)
-    endday = datetime.datetime(2018, 4, 30)
+    today = datetime.datetime(2018, 6, 11)
+    endday = datetime.datetime(2018, 5, 22)
     for i in range(30):
         from shfe_spider import getLastWeekDay
         weekday = getLastWeekDay(today)

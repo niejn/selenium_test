@@ -15,16 +15,38 @@ import io
 
 def html_parse():
     from lxml import html
-
-    tree = html.parse('http://www.datamystic.com/timezone/time_zones.html')
+    url = 'http://www.czce.com.cn/portal/DFSStaticFiles/Future/2018/20180523/FutureDataHolding.htm'
+    parser = html.HTMLParser(encoding='gbk')
+    # root = html.document_fromstring(content, parser=parser)
+    tree = html.parse(url, parser=parser)
+    # tree.docinfo
     table = tree.findall('//table')[1]
     data = [
         [td.text_content().strip() for td in row.findall('td')]
         for row in table.findall('tr')
     ]
-    # root = lxml.html.fromstring(s)
-    # anchors = root.cssselect("a")
-    # links = [a.get("href") for a in anchors]
+    print(data)
+    df = pd.DataFrame(data, )
+    print(df)
+    # '品种：苹果AP
+#     日期：2018-05-23'
+    #
+    df[0] = df[0].str.replace('\xa0', '')
+    print(df)
+    form_header = ['结算单', '资金状况', '持仓明细', '持仓汇总', '成交明细', '平仓明细', ]
+    temp_index = []
+    import collections
+    header_index_dict = collections.OrderedDict()
+    for a_header in form_header:
+        a_index_list = df.index[df[0].str.contains(a_header)].tolist()
+        if not a_index_list:
+            continue
+        a_index = a_index_list[0]
+        temp_index.append(a_index)
+        header_index_dict.update({a_header: a_index})
+        header_index_dict = collections.OrderedDict(sorted(header_index_dict.items(), key=lambda t: t[1]))
+    # df.str.replace('f', repr)
+    df.to_csv('zhenzhou0611.csv', encoding='gbk')
     return
 
 def test1():
@@ -73,7 +95,8 @@ def test2():
     return
 
 def main():
-    test2()
+    html_parse()
+    # test2()
     return
 if __name__ == '__main__':
     main()
