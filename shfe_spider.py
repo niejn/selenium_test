@@ -121,7 +121,7 @@ def shfe_rank(year=2018, month=3, day=27):
 
     }
 
-    url = "http://www.shfe.com.cn/data/dailydata/kx/pm20180327.dat"
+    # url = "http://www.shfe.com.cn/data/dailydata/kx/pm20180327.dat"
     url = "http://www.shfe.com.cn/data/dailydata/kx/pm{year:>04}{month:>02}{day:>02}.dat" \
         .format(year=year, month=month, day=day)
 

@@ -13,24 +13,33 @@ day:09
 contract.contract_id:all
 contract.variety_id:b
 '''
+'''
+memberDealPosiQuotes.variety: b
+memberDealPosiQuotes.trade_type: 0
+year: 
+month: 
+day: 
+contract.contract_id: all
+contract.variety_id: b
+'''
 
 values = {
     'memberDealPosiQuotes.variety': 'b',
     'memberDealPosiQuotes.trade_type': '0',
     'year': '2018',
-    'month': '2',
-    'day': '09',
+    'month': '5',
+    'day': '11',
     'contract.contract_id': 'all',
     'contract.variety_id': 'b',
 }
 
 # data = urlencode(values)
 url = "http://www.dce.com.cn/publicweb/quotesdata/memberDealPosiQuotes.html"
-
+# http://www.dce.com.cn/publicweb/quotesdata/memberDealPosiQuotes.html
 data = urlencode(values).encode(encoding='UTF8')
 request = Request(url, data)
 
-response = urlopen(request, timeout=4)
+response = urlopen(request,)
 re_data = response.read()
 re_data = re_data.decode('utf8')
 

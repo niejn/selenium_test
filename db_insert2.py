@@ -70,7 +70,8 @@ def get_data(futures_path = 'xls/futures', file_type = 'xlsx'):
 
         df = pd.read_excel(a_file, header=0, skip_blank_lines=True)
 
-        df[['成交手数', '成交金额']] = df.groupby(['资金帐号', '合约品种'])["成交手数", '成交金额'].transform('sum')
+        df[['成交手数', '成交金额']] = \
+            df.groupby(['资金帐号', '合约品种'])["成交手数", '成交金额'].transform('sum')
         df = df.groupby(['资金帐号', '合约品种'], as_index=False).first().reset_index()
 
         df.rename(columns=lambda x: x.strip(), inplace=True)
@@ -243,6 +244,37 @@ def init_db(path='./insert_db'):
     #     pd_insert_db(df)
     return
 
+def set_ranks_df(df, year=2018, month=3, day=17, exchange='shfe'):
+    # file_name = "shfe_{year:>04}{month:>02}{day:>02}".format(year=year, month=month, day=day)
+    # df.to_csv(file_name, index=False)
+    df = df.applymap(lambda x: x.strip() if type(x) is str else x)
+    # df.replace({r'\A\s+|\s+\Z': '', '\n': ''}, regex=True, inplace=True)
+    # df.replace({r'\s+$': '', r'^\s+': ''}, regex=True, inplace=True)
+    # df.replace({'': 0}, regex=True, inplace=True)
+    df = df[~df['PARTICIPANTABBR1'].isin(['期货公司', '非期货公司', '', ])]
+    # df.replace({'': 0}, regex=True, inplace=True)
+    df.replace({'': 0}, regex=True, inplace=True)
+    df = df.dropna()
+    # print(df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']])
+
+    print(df)
+    # df[['two', 'three']].astype(float)
+    # df['PARTICIPANTABBR1'] = df['PARTICIPANTABBR1'].str.strip()
+    # df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']] = df[['PARTICIPANTID1',
+    # 'PARTICIPANTID2', 'PARTICIPANTID3']].applymap(lambda x: x.strip())
+    file_name = "clean_{exchange}_{year:>04}{month:>02}{day:>02}.csv"\
+        .format(year=year, month=month, day=day, exchange=exchange)
+    df.to_csv(file_name, encoding='gbk', index=False)
+    if set(['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']).issubset(df.columns):
+        df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']] = \
+            df[['PARTICIPANTID1', 'PARTICIPANTID2', 'PARTICIPANTID3']].astype(dtype='int32')
+    # PARTICIPANTID1	PARTICIPANTID2	PARTICIPANTID3
+    print(df)
+    df['report_date'] = datetime.datetime(year, month, day)
+    df['exchange'] = exchange
+    print(df.head())
+    insert_db(df, tablename='ranks', con='sqlite:///exchange.sqlite')
+    return
 
 def set_type(df, year=2018, month=3, day=17):
     # file_name = "shfe_{year:>04}{month:>02}{day:>02}".format(year=year, month=month, day=day)
