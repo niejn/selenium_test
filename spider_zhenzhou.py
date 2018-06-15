@@ -283,8 +283,8 @@ def test2():
 
 def main():
     import datetime
-    today = datetime.datetime(2018, 6, 11)
-    endday = datetime.datetime(2018, 5, 1)
+    today = datetime.datetime(2018, 6, 14)
+    endday = datetime.datetime(2018, 6, 8)
     for i in range(30):
         from shfe_spider import getLastWeekDay
         weekday = getLastWeekDay(today)

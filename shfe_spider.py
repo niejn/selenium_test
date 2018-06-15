@@ -160,8 +160,8 @@ def shfe_rank(year=2018, month=3, day=27):
 
 def main():
     # today = datetime.date.today()
-    today = datetime.datetime(2018, 6, 11)
-    endday = datetime.datetime(2018, 6, 5)
+    today = datetime.datetime(2018, 6, 14)
+    endday = datetime.datetime(2018, 6,12)
     for i in range(30):
         weekday = getLastWeekDay(today)
         today = weekday

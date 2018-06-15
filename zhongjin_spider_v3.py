@@ -15,7 +15,7 @@ import io
 # from lxml import etree as ET
 def cffex_rank(year=2018, month=3, day=27):
     contracts = ['IF', 'IC', 'IH', 'TF', 'T']
-    contracts = ['IC', 'IH', 'TF', 'T']
+    # contracts = ['IC', 'IH', 'TF', 'T']
     for a_contract in contracts:
         cffex_rank_by_contract(year,month,day,a_contract)
     return
@@ -166,8 +166,8 @@ def cffex_rank_by_contract(year=2018, month=5, day=1, contract='IF'):
 def main():
     # cffex_rank_by_contract()
     # return
-    today = datetime.datetime(2018, 6, 11)
-    endday = datetime.datetime(2018, 5, 22)
+    today = datetime.datetime(2018, 6, 14)
+    endday = datetime.datetime(2018, 6, 8)
     for i in range(30):
         from shfe_spider import getLastWeekDay
         weekday = getLastWeekDay(today)
