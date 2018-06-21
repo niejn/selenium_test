@@ -38,5 +38,7 @@ with open("../dalian_res.txt", 'r') as da:
     # soup.find_all('a')
     # soup.find(id="link3")
 
+#     list = ['a', 'b', 'm', 'y', 'p', 'c', 'cs', 'jd', 'fb', 'bb', 'l', 'v', 'pp', 'j', 'jm', 'i']
+
 
 

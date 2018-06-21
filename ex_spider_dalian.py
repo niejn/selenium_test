@@ -2,6 +2,8 @@ from urllib.parse import urlencode
 from urllib.request import urlopen, Request
 import json
 from io import StringIO, BytesIO
+from lxml import html
+from lxml import etree
 # html = urlopen("http://www.shfe.com.cn/data/dailydata/kx/pm20180307.dat")
 
 '''
@@ -50,8 +52,36 @@ import requests
 url = "http://www.dce.com.cn/publicweb/quotesdata/memberDealPosiQuotes.html"
 session = requests.Session()
 session.headers.update(headers)
-s = session.get("http://www.dce.com.cn/dalianshangpin/xqsj/tjsj26/rtj/rcjccpm/index.html")
-print(s.headers)
+base_url = "http://www.dce.com.cn/publicweb/quotesdata/memberDealPosiQuotes.html"
+base_html = session.get(base_url)
+# //*[@id="memberDealPosiQuotesForm"]/div/div[1]/div[4]/div/ul[2]
+# //*[@id="memberDealPosiQuotesForm"]/div/div[1]/div[3]/div/ul[1]/li[1]/input
+
+print(base_html.text)
+tree = html.fromstring(base_html.text)
+# //*[@id="memberDealPosiQuotesForm"]/div/div[1]/div[3]/div/ul[1]/li[1]/text()
+alist = tree.xpath('//ul[@class="keyWord clearfix"]/li/text()')
+list_names = [a_row.strip() for a_row in alist if a_row.strip()]
+
+alist = tree.xpath('//ul[@class="keyWord clearfix"]/li/input/@onclick')
+# import re
+# t_str = "javascript:setVariety('a');"
+# m = re.match(r"javascript:setVariety\(\'(?P<instrumentid>[a-z]+)\'\);", t_str)
+# t_instrumentid = m.group('instrumentid')
+# instruments = []
+# for a_li in alist:
+#     m = re.match(r"javascript:setVariety\(\'(?P<instrumentid>[a-z]+)\'\);", a_li)
+#     t_instrumentid = m.group('instrumentid')
+#     instruments.append(t_instrumentid)
+
+
+# list_data = [
+#     [in_put.onclick() for in_put in row.findall('input')]
+#     for row in alist.findall('li')
+# ]
+# print(list_data)
+
+# print(s.headers)
 s = session.post(url, values)
 print(s.headers)
 # s.encoding = 'gbk'
